@@ -44,12 +44,16 @@ authorityStoreMaker = () ->
       authority(args...)
     dumpAuthorities: () ->
       console.log({authorities})
+      fns = {}
       for uuid of authorities
         authority = authorities[uuid]
         {data,fn} = authority
         console.log("--------------------------------")
         console.log({uuid,data})
         console.log(fn.toString())
+        fns[fn.toString()] ||= 0
+        fns[fn.toString()] += 1
+      console.log(fns)
   }
 
 exports.make = () ->

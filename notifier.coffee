@@ -2,8 +2,8 @@ require("./authority")
 
 setMaker = require("./set").maker
 
-notiferMaker = createAuthority undefined, () ->
-  {push, pop} = invokeAuthority(setMaker)
+notiferMaker = createAuthority {setMaker}, () ->
+  {push, pop} = invokeAuthority(@setMaker)
   #console.log({push, pop})
 
   notify = createAuthority {pop}, () ->

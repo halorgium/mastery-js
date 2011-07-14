@@ -2,8 +2,8 @@ require("./authority")
 
 dataMaker = require("./data").maker
 
-setMaker = createAuthority undefined, () ->
-  {reader, writer} = invokeAuthority(dataMaker)
+setMaker = createAuthority {dataMaker}, () ->
+  {reader, writer} = invokeAuthority(@dataMaker)
   invokeAuthority(writer, [])
 
   push = createAuthority {reader,writer}, (value) ->

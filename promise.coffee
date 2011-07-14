@@ -3,9 +3,9 @@ require("./authority")
 notifierMaker = require("./notifier").maker
 dataMaker = require("./data").maker
 
-promiseMaker = createAuthority undefined, () ->
-  {reader, writer} = invokeAuthority(dataMaker)
-  {notify, register} = invokeAuthority(notifierMaker)
+promiseMaker = createAuthority {dataMaker, notifierMaker}, () ->
+  {reader, writer} = invokeAuthority(@dataMaker)
+  {notify, register} = invokeAuthority(@notifierMaker)
 
   #console.log({reader, writer})
   #console.log({notify, register})

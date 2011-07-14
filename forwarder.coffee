@@ -2,8 +2,8 @@ require("./authority")
 
 dataMaker = require("./data").maker
 
-forwarderMaker = createAuthority undefined, (authority) ->
-  {reader, writer, clear} = invokeAuthority(dataMaker)
+forwarderMaker = createAuthority {dataMaker}, (authority) ->
+  {reader, writer, clear} = invokeAuthority(@dataMaker)
   invokeAuthority(writer, {authority})
 
   proxy = createAuthority {reader}, (args...) ->

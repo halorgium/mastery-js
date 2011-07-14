@@ -5,11 +5,23 @@ none = () =>
 
 uuid = require("node-uuid")
 
-authorityStoreMaker = () ->
+inMemory = () ->
   authorities = {}
 
   uriMaker = () ->
     "authority://#{uuid()}"
+
+  creator = (data, fnBody) ->
+    uri = uriMaker()
+    authorities[uri] = {data, fnBody}
+    uri
+  fetcher = (uri) ->
+    authorities[uri]
+
+  {creator, fetcher}
+
+authorityStoreMaker = () ->
+  {creator, fetcher} = inMemory()
 
   wrap = (data, fn) ->
     if !fn
@@ -20,7 +32,7 @@ authorityStoreMaker = () ->
   fetch = (uri) ->
     unless uri.match?(/^authority:\/\//)
       throw JSON.stringify(uri)
-    if meta = authorities[uri]
+    if meta = fetcher(uri)
       {data, fnBody} = meta
       log({data})
       log(fnBody)
@@ -31,10 +43,8 @@ authorityStoreMaker = () ->
 
   {
     createAuthority: (data, fn) ->
-      uri = uriMaker()
       fnBody = fn.toString()
-      authorities[uri] = {data, fnBody}
-      uri
+      creator(data, fnBody)
     fetchAuthority: (uri) ->
       fetch(uri)
     invokeAuthority: (uri, args...) ->

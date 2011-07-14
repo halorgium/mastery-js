@@ -3,14 +3,13 @@ log = () ->
 
 none = () =>
 
+uuid = require("node-uuid")
+
 authorityStoreMaker = () ->
   authorities = {}
-  count = 1
 
   uriMaker = () ->
-    uri = "authority://#{count}"
-    count += 1
-    uri
+    "authority://#{uuid()}"
 
   wrap = (data, fn) ->
     if !fn

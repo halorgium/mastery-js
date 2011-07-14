@@ -22,18 +22,19 @@ authorityStoreMaker = () ->
       throw JSON.stringify(uri)
     log({uri, authorities})
     if meta = authorities[uri]
-      {data, fn} = meta
-      log({data, fn})
-      log(fn.toString())
-      safeFn = eval("(#{fn.toString()})")
-      wrap(data, safeFn)
+      {data, fnBody} = meta
+      log({data})
+      log(fnBody)
+      fn = eval("(#{fnBody})")
+      wrap(data, fn)
     else
       throw "No authority found for #{uri}"
 
   {
     createAuthority: (data, fn) ->
       uri = uriMaker()
-      authorities[uri] = {data, fn}
+      fnBody = fn.toString()
+      authorities[uri] = {data, fnBody}
       uri
     fetchAuthority: (uri) ->
       fetch(uri)
@@ -47,12 +48,12 @@ authorityStoreMaker = () ->
       fns = {}
       for uri of authorities
         authority = authorities[uri]
-        {data,fn} = authority
+        {data,fnBody} = authority
         console.log("--------------------------------")
         console.log({uri,data})
-        console.log(fn.toString())
-        fns[fn.toString()] ||= 0
-        fns[fn.toString()] += 1
+        console.log(fnBody)
+        fns[fnBody] ||= 0
+        fns[fnBody] += 1
       console.log(fns)
   }
 

@@ -1,22 +1,24 @@
 require("./authority")
 
-dataMaker = require("./data").maker
+setMaker = require("./set").maker
 
 notiferMaker = createAuthority undefined, () ->
-  {reader, writer} = invokeAuthority(dataMaker)
-  invokeAuthority(writer, [])
+  {push, pop} = invokeAuthority(setMaker)
+  #console.log({push, pop})
 
-  notify = createAuthority {reader}, () ->
-    #console.log("Notifying people inside #{@reader}")
-    observers = invokeAuthority(@reader)
-    for observer in observers
-      #console.log("Notifying #{observer}")
-      invokeAuthority(observer)
+  notify = createAuthority {pop}, () ->
+    #console.log("Notifying people inside #{@pop}")
+    iterate = () =>
+      observer = invokeAuthority(@pop)
+      if observer
+        #console.log("Notifying #{observer}")
+        invokeAuthority(observer)
+        iterate()
+    iterate()
+    true
 
-  register = createAuthority {reader, writer}, (observer) ->
-    observers = invokeAuthority(@reader)
-    observers.push(observer)
-    invokeAuthority(@writer, observers)
+  register = createAuthority {push}, (observer) ->
+    invokeAuthority(@push, observer)
 
   {notify, register}
 

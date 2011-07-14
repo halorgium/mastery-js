@@ -1,6 +1,8 @@
 #log = console.log
 log = () ->
 
+none = () =>
+
 authorityStoreMaker = () ->
   authorities = {}
   count = 1
@@ -22,7 +24,8 @@ authorityStoreMaker = () ->
       {data, fn} = meta
       log({data, fn})
       log(fn.toString())
-      wrap(data, fn)
+      safeFn = eval("(#{fn.toString()})")
+      wrap(data, safeFn)
     else
       throw "No authority found for #{uuid}"
 

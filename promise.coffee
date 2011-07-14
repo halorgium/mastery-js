@@ -11,8 +11,8 @@ promiseMaker = createAuthority {dataMaker, notifierMaker}, () ->
   #console.log({notify, register})
 
   resolve = createAuthority {writer, notify}, (value) ->
-    invokeAuthority(writer, value)
-    invokeAuthority(notify)
+    invokeAuthority(@writer, value)
+    invokeAuthority(@notify)
 
   {reader, register, resolve}
 

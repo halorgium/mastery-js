@@ -10,7 +10,7 @@ invokeAuthority(register, observer)
 
 producer = createAuthority {resolve}, () ->
   console.log("Producing info")
-  invokeAuthority(resolve, "ZOMG")
+  invokeAuthority(@resolve, "ZOMG")
 
 invokeAuthority(producer)
 

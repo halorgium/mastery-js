@@ -20,7 +20,6 @@ authorityStoreMaker = () ->
   fetch = (uri) ->
     unless uri.match?(/^authority:\/\//)
       throw JSON.stringify(uri)
-    log({uri, authorities})
     if meta = authorities[uri]
       {data, fnBody} = meta
       log({data})
@@ -43,18 +42,6 @@ authorityStoreMaker = () ->
       authority = fetch(uri)
       log({authority})
       authority(args...)
-    dumpAuthorities: () ->
-      console.log({authorities})
-      fns = {}
-      for uri of authorities
-        authority = authorities[uri]
-        {data,fnBody} = authority
-        console.log("--------------------------------")
-        console.log({uri,data})
-        console.log(fnBody)
-        fns[fnBody] ||= 0
-        fns[fnBody] += 1
-      console.log(fns)
   }
 
 exports.make = () ->

@@ -3,11 +3,10 @@ require("./authority")
 dataMaker = require("./data").maker
 
 versionedDataMaker = createAuthority {dataMaker}, () ->
-  console.log("ZOZO")
   data = invokeAuthority(@dataMaker)
   [dataReader, dataWriter] = [data.reader, data.writer]
 
-  invokeAuthority(dataWriter, current: null, versions: [null])
+  invokeAuthority(dataWriter, versions: [])
 
   reader = createAuthority {dataReader}, () ->
     invokeAuthority(@dataReader).current
@@ -19,6 +18,8 @@ versionedDataMaker = createAuthority {dataMaker}, () ->
     true
   versions = createAuthority {dataReader}, () ->
     invokeAuthority(@dataReader).versions
+
+  invokeAuthority(writer, null)
 
   {reader, writer, versions}
 

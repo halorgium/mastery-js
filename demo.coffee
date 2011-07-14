@@ -13,3 +13,5 @@ producer = createAuthority {resolve}, () ->
   invokeAuthority(resolve, "ZOMG")
 
 invokeAuthority(producer)
+
+#dumpAuthorities()

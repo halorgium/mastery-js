@@ -18,6 +18,9 @@ forwarderMaker = createAuthority {dataMaker}, (authority) ->
 
   {proxy, revoker}
 
+exports.maker = forwarderMaker
+
+###
 root = createAuthority undefined, () ->
   console.log("HACKED")
 
@@ -27,3 +30,4 @@ invokeAuthority(root)
 invokeAuthority(proxy)
 invokeAuthority(revoker)
 invokeAuthority(proxy)
+###

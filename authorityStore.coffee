@@ -7,8 +7,10 @@ authorityStoreMaker = () ->
   authorities = {}
   count = 1
 
-  uuidMaker = (count) ->
-    "authority://#{count}"
+  uriMaker = () ->
+    uri = "authority://#{count}"
+    count += 1
+    uri
 
   wrap = (data, fn) ->
     if !fn
@@ -16,40 +18,39 @@ authorityStoreMaker = () ->
     () ->
       fn.apply(data, arguments)
 
-  fetch = (uuid) ->
-    unless uuid.match?(/^authority:\/\//)
-      throw JSON.stringify(uuid)
-    log({uuid, authorities})
-    if meta = authorities[uuid]
+  fetch = (uri) ->
+    unless uri.match?(/^authority:\/\//)
+      throw JSON.stringify(uri)
+    log({uri, authorities})
+    if meta = authorities[uri]
       {data, fn} = meta
       log({data, fn})
       log(fn.toString())
       safeFn = eval("(#{fn.toString()})")
       wrap(data, safeFn)
     else
-      throw "No authority found for #{uuid}"
+      throw "No authority found for #{uri}"
 
   {
     createAuthority: (data, fn) ->
-      uuid = uuidMaker(count)
-      authorities[uuid] = {data, fn}
-      count += 1
-      uuid
-    fetchAuthority: (uuid) ->
-      fetch(uuid)
-    invokeAuthority: (uuid, args...) ->
-      log "Invoking #{uuid} with #{JSON.stringify(args)}"
-      authority = fetch(uuid)
+      uri = uriMaker()
+      authorities[uri] = {data, fn}
+      uri
+    fetchAuthority: (uri) ->
+      fetch(uri)
+    invokeAuthority: (uri, args...) ->
+      log "Invoking #{uri} with #{JSON.stringify(args)}"
+      authority = fetch(uri)
       log({authority})
       authority(args...)
     dumpAuthorities: () ->
       console.log({authorities})
       fns = {}
-      for uuid of authorities
-        authority = authorities[uuid]
+      for uri of authorities
+        authority = authorities[uri]
         {data,fn} = authority
         console.log("--------------------------------")
-        console.log({uuid,data})
+        console.log({uri,data})
         console.log(fn.toString())
         fns[fn.toString()] ||= 0
         fns[fn.toString()] += 1
